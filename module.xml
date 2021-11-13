@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Document name="appmsw-docbook.ZPM">
+<Module>
+ <Name>appmsw-docbook</Name>
+ <Version>1.0.5</Version>
+ <Description>Importing docbook database from Ensemble 2018.1.4.</Description>
+ <Packaging>module</Packaging>
+	  <Keywords>docbook tools admin database</Keywords>
+		<Author>
+		<Person>Mikhaylenko Sergey</Person>
+		<CopyrightDate>2021</CopyrightDate>
+		<License>MIT</License>
+		<Notes>
+			repository:
+				https://github.com/SergeyMi37/appmsw-docbook
+			description:
+				An example of deploying a solution with databases from the archive. (Can be expanded without source codes).
+			</Notes>
+		</Author>
+	<SourcesRoot>src</SourcesRoot> 
+	<Invokes>
+		<Invoke Class="appmsw.util.database" Method="Init" >
+		</Invoke>
+	</Invokes>
+ <Resource Name="appmsw.PKG"/> 
+ <FileCopy Name="db-zip/" Target="${mgrdir}db-zip/"/>
+</Module>
+</Document>
+</Export>

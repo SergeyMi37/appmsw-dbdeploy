@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_3.png)
+![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_1.png)
 ## appmsw-dbdeploy
 
 [![license](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -56,3 +56,4 @@ USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("useroles","d:\_proj\_mygirhub\ap
 USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("useroles","useroles8")
 ```
 
+![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_3.png)

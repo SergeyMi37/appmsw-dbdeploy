@@ -102,29 +102,40 @@ ClassMethod CopyCSP(path, TempDir, slash = {$s($zversion(1)=3:"/",1:"\")}) As %S
 ClassMethod CreateDbFromTgz(sourcedb, newdb, Vers2Namw = 0) As %Status
 {
 	//<FileCopy Name="db-tgz/" Target="${mgrdir}db-tgz/"/>
-	write !,"Creating "_newdb_" db, namespace, resource, role and CSPapplication",!
 	set slash=$s($zversion(1)=3:"/",1:"\")
-	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).CreateDBNS(newdb))
-	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).DismountDB(newdb,.Properties))
 	set DbtgZDir=##class(%File).GetDirectory($zu(86))_"mgr"_slash_"db-tgz"_slash
 	set TempDir = ##class(%File).GetDirectory(##class(%File).GetDirectory($zu(86))_"mgr"_slash_"Temp"_slash_$tr($zts,".,")_slash)
 	$$$ThrowOnError(##class(%File).CreateDirectoryChain(TempDir))
-
 	set pArchiveFileName=DbtgZDir_sourcedb
 	if Vers2Namw set pArchiveFileName=pArchiveFileName_"="_$tr($system.Version.Format(5),". ","--")
 	set pArchiveFileName=pArchiveFileName_".tgz"
-	write !,"Extacted archive file "_pArchiveFileName
+	write !,"Extracted archive file "_pArchiveFileName
 	write !,"     to "_TempDir
-	;$$$ThrowOnError(##class(%ZPM.PackageManager.Developer.Archive).Extract(pArchiveFileName, DbtgZDir , .pOutput))
-	set st=##class(%ZPM.PackageManager.Developer.Archive).Extract(pArchiveFileName, TempDir , .pOutput)
-	if 'st write !,$system.Status.GetErrorText(st)," ",pArchiveFileName quit st
-	
-	set from=TempDir_"mgr"_slash_sourcedb_slash_"iris.dat"
+	; set st=##class(%ZPM.PackageManager.Developer.Archive).Extract(pArchiveFileName, TempDir , .pOutput)
+	; if 'st write !,$system.Status.GetErrorText(st)," ",pArchiveFileName quit st
+	; We will use an external tar until the error is fixed. 
+	; https://github.com/intersystems-community/zpm/issues/284
+	; It's good that it is in the base image.
+	if $zversion(1)=3 { //for Linux
+		set cmd="cd "_TempDir_" && tar -zxvf "_pArchiveFileName
+	}
+	else { //for Windows
+		set cmd="cd "_TempDir_" && powershell Expand-Archive -LiteralPath "_pArchiveFileName_" -DestinationPath "_TempDir
+	}
+	write !,cmd,!
+	$$$ThrowOnError(##class(%ZPM.PackageManager.Developer.Utils).RunCommandViaZF(cmd,.tLog,.tErr))
+
+	write !,"Creating "_newdb_" db, namespace, resource, role and CSPapplication",!
+	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).CreateDBNS(newdb))
+	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).DismountDB(newdb,.Properties))
+
+	set from=TempDir_"mgr"_slash_sourcedb_slash_"IRIS.DAT"
 	set to=$G(Properties("Directory"))_"IRIS.DAT"
 	write !,"Copy db from: "_from,!,"        to: "_to
-	h 2
+
 	set st=##class(%File).CopyFile(from, to,1)
 	if 'st write !,$system.Status.GetErrorText(st) quit st
+
 	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).MountDB(newdb))
 	zn newdb
  	//do $system.OBJ.Upgrade()

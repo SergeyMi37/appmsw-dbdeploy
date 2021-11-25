@@ -19,12 +19,14 @@ An example of deploying a solution with databases from the archive. (Can be expa
 </Notes>
 </Author>
 <SourcesRoot>src</SourcesRoot> 
-<Invokes>
-<Invoke Class="appmsw.sys.dbdeploy" Method="init" >
-</Invoke>
-</Invokes>
 <Resource Name="appmsw.sys.PKG"/> 
 <FileCopy Name="db-tgz/" Target="${mgrdir}db-tgz/"/>
+<AfterInstallMessage>
+ Create archive for database deployment:
+ USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("useroles","/irisdev/app/db-tgz/")
+ Create database from archive:
+ USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("useroles","useroles8")
+</AfterInstallMessage>
 </Module>
 </Document>
 </Export>

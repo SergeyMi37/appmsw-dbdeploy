@@ -45,15 +45,14 @@ docker-compose up -d
 docker-compose exec iris iris session iris
 ```
 
-### Create archive for database deployment:
-```
-USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("useroles","d:\_proj\_mygirhub\appmsw-dbdeploy\db-tgz\")
-```
+ ###You can protect your solution by deleting the source code:
+ `USER>do ##class(appmsw.sys.dbdeploy).MakeClassDeployed("apptools.core","PERMISSION")`
 
-
-### Create database from archive:
-```
-USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("useroles","useroles8")
-```
+ ###Create an archive for database deployment and move it outside the container:
+ `USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("permission","/irisdev/app/db-tgz/")`
+ 
+ ###In a new instance, you can create a database from the archive with a new name.:
+ `USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("permission","newpermiss")`
+  
 
 ![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_3.png)

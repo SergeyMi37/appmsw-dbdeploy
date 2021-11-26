@@ -2,10 +2,23 @@
 Class appmsw.sys.dbdeploy [ Abstract ]
 {
 
-/// do ##class(appmsw.sys.dbdeploy).init()
-ClassMethod init(action = "") As %Status
+/// do ##class(appmsw.sys.dbdeploy).MakeClassDeployed("apptools.core","PERMISSION")
+ClassMethod MakeClassDeployed(packname, ns = {$namespace}) As %Status
 {
-
+	new $namespace
+	set $namespace=ns
+	s result=##class(%ResultSet).%New("%Dictionary.ClassDefinitionQuery:Summary")
+	d result.Execute()
+	while result.Next() 
+	{
+		s cls=result.Data("Name")
+		continue:$Extract(cls,1)="%"
+		;write !,cls
+		if ("@"_cls)[("@"_packname) {
+			set st=$System.OBJ.MakeClassDeployed(cls)
+			write:st !,cls," deployed"
+		}
+	}
 	quit $$$OK
 }
 
@@ -124,12 +137,15 @@ ClassMethod CreateDbFromTgz(sourcedb, newdb, Vers2Namw = 0) As %Status
 	}
 	write !,cmd,!
 	$$$ThrowOnError(##class(%ZPM.PackageManager.Developer.Utils).RunCommandViaZF(cmd,.tLog,.tErr))
-
+	set from=TempDir_"mgr"_slash_sourcedb_slash_"IRIS.DAT"
+	set st=##class(%File).Exists(from)
+	if 'st set msg="File not found "_from write !,msg quit $$$ERROR($$$GeneralError,msg)
+	
 	write !,"Creating "_newdb_" db, namespace, resource, role and CSPapplication",!
 	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).CreateDBNS(newdb))
 	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).DismountDB(newdb,.Properties))
 
-	set from=TempDir_"mgr"_slash_sourcedb_slash_"IRIS.DAT"
+
 	set to=$G(Properties("Directory"))_"IRIS.DAT"
 	write !,"Copy db from: "_from,!,"        to: "_to
 
@@ -154,7 +170,7 @@ ClassMethod GetUrl(url) As %Status
 	quit Status
 }
 
-/// write ##class(appmsw.sys.dbdeploy).CreateDBNS("NEWNS")
+/// do ##class(appmsw.sys.dbdeploy).CreateDBNS("NEWNS")
 ClassMethod CreateDBNS(pNamespace As %String, pCodeData As %Boolean = 0, pPathDataset As %String = "", pInterOperability As %Boolean = 1, pREST As %String = "") As %Status
 {
 	set pNamespace=$ZCONVERT(pNamespace,"L")

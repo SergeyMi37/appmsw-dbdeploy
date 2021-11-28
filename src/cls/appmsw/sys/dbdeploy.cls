@@ -128,12 +128,11 @@ ClassMethod CreateDbFromTgz(sourcedb, newdb, Vers2Namw = 0) As %Status
 	; if 'st write !,$system.Status.GetErrorText(st)," ",pArchiveFileName quit st
 	; We will use an external tar until the error is fixed. 
 	; https://github.com/intersystems-community/zpm/issues/284
-	; It's good that it is in the base image.
 	if $zversion(1)=3 { //for Linux
 		set cmd="cd "_TempDir_" && tar -zxvf "_pArchiveFileName
 	}
 	else { //for Windows
-		set cmd="cd "_TempDir_" && powershell Expand-Archive -LiteralPath "_pArchiveFileName_" -DestinationPath "_TempDir
+		set cmd="cd "_TempDir_" && powershell tar -xvzf "_pArchiveFileName
 	}
 	write !,cmd,!
 	$$$ThrowOnError(##class(%ZPM.PackageManager.Developer.Utils).RunCommandViaZF(cmd,.tLog,.tErr))
@@ -144,18 +143,26 @@ ClassMethod CreateDbFromTgz(sourcedb, newdb, Vers2Namw = 0) As %Status
 	write !,"Creating "_newdb_" db, namespace, resource, role and CSPapplication",!
 	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).CreateDBNS(newdb))
 	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).DismountDB(newdb,.Properties))
-
-
+	h 3
 	set to=$G(Properties("Directory"))_"IRIS.DAT"
+	;set st=##class(%File).Delete(to,.ret)
 	write !,"Copy db from: "_from,!,"        to: "_to
-
-	set st=##class(%File).CopyFile(from, to,1)
+	Set st = $$$ADDSC(st,##class(%File).CopyFile(from, to,1))
+  	Set st =  $$$ADDSC(st,$g(%objlasterror, $$$OK))
 	if 'st write !,$system.Status.GetErrorText(st) quit st
-
 	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).MountDB(newdb))
+	
+	;Until the problem is solved https://github.com/intersystems-community/zpm/issues/287
+	;we copy the csp explicitly
+	set from=TempDir_"csp"
+	set to= ##class(%File).GetDirectory($zu(86))_"csp"
+	write !,"Copy web from: "_from,!,"       to: "_to
+	set st=##class(%File).CopyDir(from, to,1)
+
 	zn newdb
- 	//do $system.OBJ.Upgrade()
-	//do $system.OBJ.CompileAll("cfk-u-d",.err)
+	//do $system.OBJ.Upgrade()
+	//Do $system.OBJ.ShowFlags()
+	do $system.OBJ.CompileAll("cfk-u-d")
 	do ##class(%ZPM.PackageManager).Shell("load "_TempDir)
 	quit st
 }

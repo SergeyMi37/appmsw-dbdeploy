@@ -22,14 +22,9 @@ An example of deploying a solution with databases from the archive. (Can be expa
 <Resource Name="appmsw.sys.PKG"/> 
 <FileCopy Name="db-tgz/" Target="${mgrdir}db-tgz/"/>
 <AfterInstallMessage>
- You can protect your solution by deleting the source code:
- do ##class(appmsw.sys.dbdeploy).MakeClassDeployed("apptools.core","PERMISSION")
-
- Create an archive for database deployment and move it outside the container:
- USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("permission","/irisdev/app/db-tgz/")
- 
- In a new instance, you can create a database from the archive with a new name.:
- USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("permission","newpermiss")
+ You can protect your solution by deleting the source code. Create an archive for database deployment and move it outside the container.
+ In a new instance, you can create a database from the archive with a new name.
+ https://github.com/SergeyMi37/appmsw-dbdeploy/blob/master/README.md
 </AfterInstallMessage>
 </Module>
 </Document>

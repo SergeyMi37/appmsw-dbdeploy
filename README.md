@@ -1,9 +1,10 @@
-![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_2.png)
+![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_4.png)
 ## appmsw-dbdeploy
 
 [![license](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An example of deploying a solution with databases from the archive. (Can be expanded without source codes).
+You can protect your solution by supplying it to the customer without source code.
+An example of creating a database archives without source code for deploying a solution from a repository with a package manager ZPM.
 
 ## Installation with ZPM
 
@@ -40,19 +41,36 @@ docker-compose up -d
 ```
 
 ### To create database, you need to run:
-
 ```
 docker-compose exec iris iris session iris
+
+USER>do ##class(appmsw.sys.dbdeploy).CreateDBNS("LOCKDOWN")
+USER>zn "LOCKDOWN"
+LOCKDOWN>zpm "install isc-apptools-lockdown"
 ```
 
  ###You can protect your solution by deleting the source code:
- `USER>do ##class(appmsw.sys.dbdeploy).MakeClassDeployed("apptools.core","PERMISSION")`
+```
+ USER>do ##class(appmsw.sys.dbdeploy).MakeClassDeployed("appmsw.security","LOCKDOWN")
+ appmsw.security.lockdown deployed
+```
 
  ###Create an archive for database deployment and move it outside the container:
- `USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("permission","/irisdev/app/db-tgz/")`
+```
+ USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("lockdown","/irisdev/app/db-tgz/")
+ ...
+ Create TarGZ /irisdev/app/db-tgz/lockdown.tgz
+ 
+ USER> do ##class(appmsw.sys.dbdeploy).CreateTGZ("lockdown","/irisdev/app/db-tgz/",1) ;включая версию в имя архива
+ ...
+ Create TarGZ /irisdev/app/db-tgz/lockdown=2021-1-(Build-215-3U).tgz
+```
  
  ###In a new instance, you can create a database from the archive with a new name.:
- `USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("permission","newpermiss")`
-  
-
-![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_3.png)
+```
+ USER>zpm "appmsw-dbdeploy"
+ USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("lockdown","newlock")
+ 
+ NEWLOCK>
+ 
+```

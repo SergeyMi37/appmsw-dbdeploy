@@ -61,14 +61,14 @@ LOCKDOWN>zpm "install isc-apptools-lockdown"
  ...
  Create TarGZ /irisdev/app/db-tgz/lockdown.tgz
  
- USER> do ##class(appmsw.sys.dbdeploy).CreateTGZ("lockdown","/irisdev/app/db-tgz/",1) ;включая версию в имя архива
+ USER> do ##class(appmsw.sys.dbdeploy).CreateTGZ("lockdown","/irisdev/app/db-tgz/",1) ;,1= including the version in the archive name
  ...
  Create TarGZ /irisdev/app/db-tgz/lockdown=2021-1-(Build-215-3U).tgz
 ```
  
- ###In a new instance, you can create a database from the archive with a new name.:
+ ### Create your project based on appmsv-dbdeploy by adding your new archives files to it and deploying new databases. The archives will contain resources that can be implemented as independent modules ZPM:
 ```
- USER>zpm "appmsw-dbdeploy"
+ 
  USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("lockdown","newlock")
  
  NEWLOCK>

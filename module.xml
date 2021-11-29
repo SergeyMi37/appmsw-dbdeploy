@@ -3,7 +3,7 @@
 <Document name="appmsw-dbdeploy.ZPM">
 <Module>
 <Name>appmsw-dbdeploy</Name>
-<Version>1.0.0</Version>
+<Version>1.0.1</Version>
 <Description>An example of deploying solutions with prepared databases, even without source code.</Description>
 <Packaging>module</Packaging>
 <Keywords>tools admin database deploy</Keywords>
@@ -22,9 +22,9 @@ An example of deploying a solution with databases from the archive. (Can be expa
 <Resource Name="appmsw.sys.PKG"/> 
 <FileCopy Name="db-tgz/" Target="${mgrdir}db-tgz/"/>
 <AfterInstallMessage>
- You can protect your solution by deleting the source code. Create an archive for database deployment and move it outside the container.
- In a new instance, you can create a database from the archive with a new name.
- https://github.com/SergeyMi37/appmsw-dbdeploy/blob/master/README.md
+You can protect your solution by deleting the source code. Create an archive for database deployment and move it outside the container.
+&#13;In a new instance, you can create a database from the archive with a new name.
+&#13;https://github.com/SergeyMi37/appmsw-dbdeploy/blob/master/README.md
 </AfterInstallMessage>
 </Module>
 </Document>

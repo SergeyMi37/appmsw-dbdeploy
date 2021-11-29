@@ -25,7 +25,10 @@ ClassMethod MakeClassDeployed(packname, ns = {$namespace}) As %Status
 /// do ##class(appmsw.sys.dbdeploy).CreateTGZ("apptoolsadmin","d:\_proj\_mygirhub\appmsw-dbdeploy\db-tgz\")
 ClassMethod CreateTGZ(sourcedb, targetpath, Vers2Namw = 0, ByRef targetnametgz, ByRef out) As %Status
 {
-	write $System.Status.GetErrorText(##class(appmsw.sys.dbdeploy).DismountDB(sourcedb,.Properties))
+	if $namespace=$zconvert(sourcedb,"U") set msg="Can't unmount the current db" write !,msg quit $$$ERROR($$$GeneralError,msg)
+	set st=##class(appmsw.sys.dbdeploy).DismountDB(sourcedb,.Properties)
+	if 'st write !,$System.Status.GetErrorText(st) quit st
+
 	set slash=$s($zversion(1)=3:"/",1:"\")
 	set TempDir = ##class(%File).GetDirectory(##class(%File).GetDirectory($zu(86))_"mgr"_slash_"Temp"_slash_$tr($zts,".,")_slash)
 	$$$ThrowOnError(##class(%File).CreateDirectoryChain(TempDir_"mgr"_slash_sourcedb_slash))
@@ -56,7 +59,7 @@ ClassMethod CreateTGZ(sourcedb, targetpath, Vers2Namw = 0, ByRef targetnametgz, 
 	write !,"Create TarGZ ",filetgz
 	set st=##class(%ZPM.PackageManager.Developer.Archive).Create(TempDir,filetgz,.out) 
 	if 'st write $System.Status.GetErrorText(st) quit st
-	;set st=##class(%File).RemoveDirectoryTree(TempDir) if 'st write $System.Status.GetErrorText(st) quit st
+	set st=##class(%File).RemoveDirectoryTree(TempDir) if 'st write $System.Status.GetErrorText(st) quit st
 	quit $$$OK
 }
 
@@ -115,6 +118,7 @@ ClassMethod CopyCSP(path, TempDir, slash = {$s($zversion(1)=3:"/",1:"\")}) As %S
 ClassMethod CreateDbFromTgz(sourcedb, newdb, Vers2Namw = 0) As %Status
 {
 	//<FileCopy Name="db-tgz/" Target="${mgrdir}db-tgz/"/>
+	if $namespace=$zconvert(newdb,"U") quit $$$ERROR($$$GeneralError,"Can't create the current db")
 	set slash=$s($zversion(1)=3:"/",1:"\")
 	set DbtgZDir=##class(%File).GetDirectory($zu(86))_"mgr"_slash_"db-tgz"_slash
 	set TempDir = ##class(%File).GetDirectory(##class(%File).GetDirectory($zu(86))_"mgr"_slash_"Temp"_slash_$tr($zts,".,")_slash)
@@ -164,6 +168,7 @@ ClassMethod CreateDbFromTgz(sourcedb, newdb, Vers2Namw = 0) As %Status
 	//Do $system.OBJ.ShowFlags()
 	do $system.OBJ.CompileAll("cfk-u-d")
 	do ##class(%ZPM.PackageManager).Shell("load "_TempDir)
+	set st=##class(%File).RemoveDirectoryTree(TempDir) if 'st write $System.Status.GetErrorText(st) quit st
 	quit st
 }
 
@@ -561,6 +566,9 @@ ClassMethod DismountDB(Database, ByRef Properties) As %Status
 	If ##Class(Config.Databases).Get(Database,.Properties) {
 		Set Directory = $G(Properties("Directory"))
   		Set st = ##class(SYS.Database).DismountDatabase(Directory)
+	}
+	else {
+		quit $$$ERROR($$$GeneralError,"No database "_Database)
 	}
 	q st
 }

@@ -40,37 +40,39 @@ docker-compose build
 docker-compose up -d
 ```
 
-### To create database, you need to run:
+### First you need to update the ZPM version to the latest 0.3.2
 ```
 docker-compose exec iris iris session iris
 
+USER>zpm "install zpm"
+USER>zpm "ver"
+zpm 0.3.2
+```
+### To create database, you need to run:
+```
 USER>do ##class(appmsw.sys.dbdeploy).CreateDBNS("LOCKDOWN")
 USER>zn "LOCKDOWN"
 LOCKDOWN>zpm "install isc-apptools-lockdown"
 ```
 
- ###You can protect your solution by deleting the source code:
+ ### You can protect your solution by deleting the source code:
 ```
  USER>do ##class(appmsw.sys.dbdeploy).MakeClassDeployed("appmsw.security","LOCKDOWN")
  appmsw.security.lockdown deployed
 ```
 
- ###Create an archive for database deployment and move it outside the container:
+ ### Create an archive for database deployment and move it outside the container:
 ```
  USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("lockdown","/irisdev/app/db-tgz/")
  ...
  Create TarGZ /irisdev/app/db-tgz/lockdown.tgz
  
- USER> do ##class(appmsw.sys.dbdeploy).CreateTGZ("lockdown","/irisdev/app/db-tgz/",1) ;,1= including the version in the archive name
+ USER>do ##class(appmsw.sys.dbdeploy).CreateTGZ("lockdown","/irisdev/app/db-tgz/",1) ;,1= including the version in the archive name
  ...
  Create TarGZ /irisdev/app/db-tgz/lockdown=2021-1-(Build-215-3U).tgz
 ```
  
  ### Create your project based on appmsv-dbdeploy by adding your new archives files to it and deploying new databases. The archives will contain resources that can be implemented as independent modules ZPM:
 ```
- 
- USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("lockdown","newlock")
- 
- NEWLOCK>
- 
+USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("lockdown","newlock")
 ```

@@ -46,9 +46,9 @@ docker-compose up -d
 ### First you need to update the ZPM version to the latest 0.3.2
 ```
 docker-compose exec iris iris session iris
-
-USER>zpm "install zpm"
-USER>zpm "ver"
+USER>zn "%SYS"
+%SYS>zpm "install zpm"
+%SYS>zpm "ver"
 zpm 0.3.2
 ```
 ### To create database, you need to run:

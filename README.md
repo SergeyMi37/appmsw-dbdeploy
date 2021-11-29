@@ -1,7 +1,10 @@
 ![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_4.png)
 ## appmsw-dbdeploy
-
+[![Gitter](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/appmsw-dbdeploy)
+[![GitHub all releases](https://img.shields.io/badge/Available%20on-GitHub-black)](https://github.com/SergeyMi37/appmsw-dbdeploy)
 [![license](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SergeyMi37/appmsw-dbdeploy">
 
 You can protect your solution by supplying it to the customer without source code.
 An example of creating a database archives without source code for deploying a solution from a repository with a package manager ZPM.
@@ -76,3 +79,4 @@ LOCKDOWN>zpm "install isc-apptools-lockdown"
 ```
 USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("lockdown","newlock")
 ```
+

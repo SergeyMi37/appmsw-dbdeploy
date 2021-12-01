@@ -1,6 +1,7 @@
 ![](https://raw.githubusercontent.com/SergeyMi37/appmsw-dbdeploy/master/doc/Screenshot_4.png)
 ## appmsw-dbdeploy
 [![Gitter](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/appmsw-dbdeploy)
+[![DC](https://img.shields.io/badge/Available%20article%20on-Intersystems%20Community-orange)](https://community.intersystems.com/post/deploying-solutions-without-source-code-zpm)
 [![GitHub all releases](https://img.shields.io/badge/Available%20on-GitHub-black)](https://github.com/SergeyMi37/appmsw-dbdeploy)
 [![license](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -75,7 +76,7 @@ LOCKDOWN>zpm "install isc-apptools-lockdown"
  Create TarGZ /irisdev/app/db-tgz/lockdown=2021-1-(Build-215-3U).tgz
 ```
  
- ### Create your project based on appmsv-dbdeploy by adding your new archives files to it and deploying new databases. The archives will contain resources that can be implemented as independent modules ZPM:
+ ### Create your project based on appmsw-dbdeploy by adding your new archives files to it and deploying new databases. The archives will contain resources that can be implemented as independent modules ZPM:
 ```
 USER>do ##class(appmsw.sys.dbdeploy).CreateDbFromTgz("lockdown","newlock")
 ```

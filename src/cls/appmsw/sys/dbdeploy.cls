@@ -68,7 +68,7 @@ ClassMethod CreateModuleXML(namespace, tPath, tName, tVersion = "1.0.0", tDescri
 {
 	;set st=##class(%ZPM.PackageManager.Developer.ModuleTemplate).GenerateTemplate(tPath)
 	Set tTemplate = ##class(%ZPM.PackageManager.Developer.ModuleTemplate).NewTemplate(tPath, tName, tVersion, tDescription, tKeywords)
-	Return:'$IsObject(tTemplate) 
+	Return:'$IsObject(tTemplate) $$$ERROR($$$GeneralError,"Module creation error")
 	;Do tTemplate.SetAuthorProps(tAuthorPerson, tAuthorOrg, tAuthorLicense, tAuthorCopy, tAuthorNotes)
 	if namespace ;stupid line to please the quality of the code
 	;Do tTemplate.AddWebApps(tWebAppList,.tCSPapps,namespace) //TODO https://github.com/intersystems-community/zpm/pull/275
